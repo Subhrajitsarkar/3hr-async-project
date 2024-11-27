@@ -1,0 +1,242 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="" id="formId" onsubmit="saveDetails(event)">
+        <label for="name">Choose your Dish😋</label>
+        <input type="text" name="name" id="name" required>
+
+        <label for="number">Price💵</label>
+        <input type="number" name="number" id="number" required>
+
+        <select name="table" id="table" required>
+            <option value="table1">Table 1</option>
+            <option value="table2">Table 2</option>
+            <option value="table3">Table 3</option>
+        </select>
+
+        <input type="hidden" name="hidden" id="hidden">
+        <button type="submit">ADD</button>
+
+        <div>
+            <h1>Orders:</h1>
+            <ul id="table1">
+                <h3>Table 1</h3>
+            </ul>
+            <ul id="table2">
+                <h3>Table 2</h3>
+            </ul>
+            <ul id="table3">
+                <h3>Table 3</h3>
+            </ul>
+        </div>
+
+    </form>
+
+    <script>
+        API = "https://crudcrud.com/api/f76c1fe6ec1742be8fab025175600e7b/orders"
+
+        async function saveDetails(event) {
+            event.preventDefault()
+            let name = document.getElementById('name').value
+            let number = document.getElementById('number').value
+            let table = document.getElementById('table').value
+            let index = document.getElementById('hidden').value
+
+            let obj = { name, number, table }
+            try {
+                await axios.post("https://crudcrud.com/api/37a9374771624be5967f600bbae42222/orders", obj)
+                document.getElementById('formId').reset()
+                displayDetails()
+            } catch (error) {
+                console.log('error occured', error);
+            }
+        }
+
+        async function displayDetails() {
+            try {
+                let response = await axios.get("https://crudcrud.com/api/37a9374771624be5967f600bbae42222/orders")
+                let orders = response.data
+
+                orders.forEach((order) => {
+                    let show = `<li>${order.name} - ${order.table} - ₹${order.number}
+                                <button onclick="deleteButton('${order._id}')">Delete</button></li>`
+                    let tableId = document.getElementById(order.table)
+                    if (tableId) {
+                        tableId.innerHTML += show;
+                    } else {
+                        console.error(`Table with id ${order.table} not found.`);
+                    }
+                })
+            }
+            catch (err) {
+                console.log('error occured', err);
+            }
+        }
+        window.onload = displayDetails
+    </script>
+</body>
+
+</html> -->
+
+
+
+
+<!-- 2nd procedure -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Form</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="formId" onsubmit="saveDetails(event)">
+        <label for="name">Choose your Dish😋</label>
+        <input type="text" name="name" id="name" required>
+
+        <label for="number">Price💵</label>
+        <input type="number" name="number" id="number" required>
+
+        <select name="table" id="table" required>
+            <option value="Table 1">Table 1</option>
+            <option value="Table 2">Table 2</option>
+            <option value="Table 3">Table 3</option>
+        </select>
+
+        <input type="hidden" name="hidden" id="hidden">
+        <button type="submit">ADD</button>
+
+        <div>
+            <h1>Orders:</h1>
+        </div>
+        <ul id="table1">
+            <h3>Table 1</h3>
+        </ul>
+        <ul id="table2">
+            <h3>Table 2</h3>
+        </ul>
+        <ul id="table3">
+            <h3>Table 3</h3>
+        </ul>
+    </form>
+
+    <script>
+        const API = "https://crudcrud.com/api/37a9374771624be5967f600bbae42222/orders";
+
+        // Function to handle form submission
+        async function saveDetails(event) {
+            event.preventDefault();
+            let name = document.getElementById('name').value;
+            let number = document.getElementById('number').value;
+            let table = document.getElementById('table').value;
+            let index = document.getElementById('hidden').value;
+
+            // Create order object
+            let obj = { name, number, table };
+
+            try {
+                let response = await axios.post(API, obj);
+                console.log(response.data);
+                document.getElementById('formId').reset();
+                displayDetails();
+            } catch (error) {
+                console.error("Error saving details:", error);
+            }
+        }
+
+        // Function to display orders
+        async function displayDetails() {
+            try {
+                let response = await axios.get(API);
+                let orders = response.data;
+
+                // Clear existing orders from tables
+                document.getElementById('table1').innerHTML = '<h3>Table 1</h3>';
+                document.getElementById('table2').innerHTML = '<h3>Table 2</h3>';
+                document.getElementById('table3').innerHTML = '<h3>Table 3</h3>';
+
+                orders.forEach((order) => {
+                    // Create the <li> element for the order
+                    let li = `
+                        <li>
+                            ${order.name} - ${order.table} - ₹${order.number}
+                            <button onclick="deleteButton('${order._id}')">Delete</button>
+                        </li>
+                    `;
+
+                    // Map the table name to the corresponding <ul> ID
+                    let tableId;
+                    if (order.table === "Table 1")
+                        tableId = document.getElementById("table1");
+                    else if (order.table === "Table 2")
+                        tableId = document.getElementById("table2");
+                    else if (order.table === "Table 3")
+                        tableId = document.getElementById("table3");
+
+                    // Append the <li> to the corresponding <ul>
+                    if (tableId) {
+                        tableId.innerHTML += li;
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+            }
+        }
+
+        // Function to handle order deletion
+        async function deleteButton(orderId) {
+            try {
+                await axios.delete(`${API}/${orderId}`);
+                displayDetails(); // Refresh the order list after deletion
+            } catch (error) {
+                console.error("Error deleting order:", error);
+            }
+        }
+
+        // Initial call to display orders when the page loads
+        displayDetails();
+    </script>
+</body>
+
+</html>
+
+async function displayDetails() {
+let response = await axios.get("https://crudcrud.com/api/00c36a12d9da4936a959c30ff3b1450d/users");
+let userDetails = response.data;
+
+// Clear the current lists
+document.getElementById('t1Id').innerHTML = '';
+document.getElementById('t2Id').innerHTML = '';
+document.getElementById('t3Id').innerHTML = '';
+
+userDetails.forEach((user) => {
+let ulId = `${user.table}Id`; // Get the correct <ul> ID based on the table
+    let ul = document.getElementById(ulId);
+
+    ul.innerHTML += `<li>${user.price} - ${user.dish}
+        <button onclick='deleteDetails("${user._id}")'>Delete Order</button>
+    </li>`;
+    });
+    }
